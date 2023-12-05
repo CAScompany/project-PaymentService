@@ -14,15 +14,15 @@ jobs:
   Analysis:
     runs-on: ubuntu-latest
     defaults:
-      run: |
-        pwd
-        ls -la
-
-        # working-directory: PaymentService
+        run:
+            working-directory: payment-service
 
     steps:
       - name: Code checkout 
         uses: actions/checkout@v4
+
+      - name: Print Working Directory
+        run: pwd
 
       - name: test maven
         run: mvn clean test install
@@ -49,7 +49,5 @@ jobs:
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
 
-
-     
-
-      
+      - name: Correr App
+        run: mvn spring-boot:run & sleep 4
