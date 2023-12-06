@@ -21,9 +21,7 @@ jobs:
       - name: Code checkout 
         uses: actions/checkout@v4
 
-      - name: Print Working Directory
-        run: ls -R
-
+     
       - name: test maven
         run: mvn clean test install
       
@@ -50,4 +48,7 @@ jobs:
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
 
       - name: Correr App
-        run: mvn spring-boot:run & sleep 4
+        run: mvn spring-boot:run & sleep 40000
+
+      - name: Test 1
+        run: curl -X POST http://localhost:8080/payments/50
