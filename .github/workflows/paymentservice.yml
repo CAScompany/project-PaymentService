@@ -71,13 +71,6 @@ jobs:
         with:
           name: reporte-postman
           path: ./payment-services/testArtifacts
-<<<<<<< HEAD
-
-=======
-      
-      - name: Test Endpoint
-        run: curl -X POST http://localhost:8080/payments/50
->>>>>>> b5def63dac589790a4d710862075012239b8e421
 
       - name: Detener la app
         run: |
@@ -88,7 +81,3 @@ jobs:
             else
                 echo "Spring Boot App not running."
             fi
-      
-      #- name: Build and Publish
-      #run: mvn spr... run {ambiente}-payment {ambiente}-s 
-        
