@@ -50,11 +50,15 @@ jobs:
       - name: Correr App
         run: mvn spring-boot:run & sleep 4
 
-      - name: Test 1
+      - name: Test Endpoint
         run: curl -X POST http://localhost:8080/payments/50
 
-      - name: Test 2
-        run: curl -X GET http://localhost:8080/payments/50
-
-      - name: Test 3
-        run: curl -X GET http://soboroconto.net:8080/payments/50
+      - name: Detener la app
+        run: |
+            PID=$(ps aux | grep 'spring-boot:run' | grep -v grep | awk '{print $2}')
+            if [ -n "$PID" ]; then
+                echo "Stopping Spring Boot App with PID $PID"
+                kill -9 $PID
+            else
+                echo "Spring Boot App not running."
+            fi
