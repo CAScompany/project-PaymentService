@@ -47,9 +47,8 @@ jobs:
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
 
-      - name: Correr App
-        run: mvn spring-boot:run & sleep 4
-
+      #- name: Correr App
+      #  run: mvn spring-boot:run & sleep 4
       - name: Test Endpoint
         run: curl -X POST http://localhost:8080/payments/50
 
@@ -62,3 +61,7 @@ jobs:
             else
                 echo "Spring Boot App not running."
             fi
+      
+      #- name: Build and Publish
+        #run: 
+        
