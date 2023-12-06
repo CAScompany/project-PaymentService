@@ -47,10 +47,35 @@ jobs:
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
 
-      #- name: Correr App
-      #  run: mvn spring-boot:run & sleep 4
+      - name: Correr App
+        run: mvn spring-boot:run & sleep 4
+  
       - name: Test Endpoint
-        run: curl -X POST http://localhost:8080/payments/50
+        run: curl -X POST http://localhost:8080/payments/50 > response.json
+
+      - name: Instalar Node.js y npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Newman
+        run: |
+              npm install -g newman@latest
+              npm install -g newman-reporter-htmlextra
+
+      - name: Ejecutar pruebas funcionales con Newman
+        run: |
+              newman run postman_test.json -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
+#              cd newman && ls | grep *.html | awk '{print $1}' | xargs -I {} mv {} reporte.html
+      - name: Revisar archivos 
+        run: tree
+
+      - name: Almacenar reporte como artefacto
+        uses: actions/upload-artifact@v3
+        with:
+          name: reporte-postman
+          path: ./payment-services/testArtifacts
+
 
       - name: Detener la app
         run: |
@@ -63,5 +88,5 @@ jobs:
             fi
       
       #- name: Build and Publish
-        #run: 
+      #run: mvn spr... run {ambiente}-payment {ambiente}-s 
         
