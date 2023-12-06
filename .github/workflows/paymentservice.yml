@@ -50,9 +50,6 @@ jobs:
       - name: Correr App
         run: mvn spring-boot:run & sleep 4
   
-      - name: Test Endpoint
-        run: curl -X POST http://localhost:8080/payments/50 > response.json
-
       - name: Instalar Node.js y npm
         uses: actions/setup-node@v4
         with:
@@ -65,8 +62,7 @@ jobs:
 
       - name: Ejecutar pruebas funcionales con Newman
         run: |
-              newman run postman_test.json -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
-#              cd newman && ls | grep *.html | awk '{print $1}' | xargs -I {} mv {} reporte.html
+              newman run collection.json -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
       - name: Revisar archivos 
         run: tree
 
