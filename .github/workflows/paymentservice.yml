@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: reporte-postman
-          path: ./payment-services/testArtifacts
+          path: ./testArtifacts/htmlreport.html
 
       - name: Detener la app
         run: |
