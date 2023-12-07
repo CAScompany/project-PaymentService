@@ -47,10 +47,14 @@ jobs:
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
 
+      
       - name: Check Quality Gate
-        uses: sonarsource/sonarcloud-quality-gate-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+           sleep 300  # wait for SonarCloud to process the analysis
+            STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: https://sonarcloud.io/api/project_badges/measure?project=your_project_key&metric=alert_status | jq -r '.status')
+            if [ "$STATUS" != "OK" ]; then exit 1; fi
+            
+
 
       - name: Correr App
         run: mvn spring-boot:run & sleep 4
