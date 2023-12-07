@@ -1,12 +1,16 @@
 name: paymentservice
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-
+env:
+  CODE_DIR: ./payments-service
+  ECR_REPOSITORY: proyecto-ort-repo
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: project-ort-eks
+  
 permissions:
   pull-requests: read
 
@@ -15,13 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
         run:
-            working-directory: ./payments-service
+            working-directory: ${{ env.CODE_DIR }}
 
     steps:
       - name: Code checkout 
         uses: actions/checkout@v4
 
-     
       - name: test maven
         run: mvn clean test install
       
@@ -48,9 +51,23 @@ jobs:
             -Dsonar.junit.reportsPath=target/checckstyle-result.xml
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
-
-                   
-
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          scanMetadataReportFile: ./payments-service/.scannerwork/report-task.txt
+        # Force to fail step after specific time. $GITHUB_WORKSPACE
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  FUNTIONAL_TESTING:
+    needs:  Analysis
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.CODE_DIR }}
+    steps:
+          
       - name: Correr App
         run: mvn spring-boot:run & sleep 4
   
@@ -69,12 +86,12 @@ jobs:
               newman run collection.json -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
       - name: Revisar archivos 
         run: tree
-                     
+                    
       - name: Almacenar reporte como artefacto
         uses: actions/upload-artifact@v3
         with:
-          name: reporte-postman
-          path: ./testArtifacts/htmlreport.html
+          name: reporte-postman-paymant-service
+          path: ./payments-service/testArtifacts
 
       - name: Detener la app
         run: |
