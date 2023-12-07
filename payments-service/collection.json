@@ -30,6 +30,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test(\"Status code is between 200 and 299\", function () {",
+              "    pm.response.to.have.status(200);",
               "    pm.response.to.have.status.within(200, 299);",
               "})"
             ]
