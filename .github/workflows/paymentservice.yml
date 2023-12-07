@@ -65,12 +65,9 @@ jobs:
               newman run collection.json -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
       - name: Revisar archivos 
         run: tree
-      - name: List test artifacts
-        run: |
-            ls -la ./testArtifacts
-                
+                     
       - name: Almacenar reporte como artefacto
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: reporte-postman
           path: ./testArtifacts/htmlreport.html
