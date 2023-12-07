@@ -47,6 +47,11 @@ jobs:
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
             -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
 
+      - name: Check Quality Gate
+        uses: sonarsource/sonarcloud-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: Correr App
         run: mvn spring-boot:run & sleep 4
   
@@ -67,7 +72,7 @@ jobs:
         run: tree
                      
       - name: Almacenar reporte como artefacto
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: reporte-postman
           path: ./testArtifacts/htmlreport.html
