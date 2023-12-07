@@ -33,7 +33,7 @@ jobs:
       
           
       - name: Install JQ
-        run: sudo apt-get isntall jq
+        run: sudo apt-get install jq
         
         
       - name: Analyze with SonarCloud
