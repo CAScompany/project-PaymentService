@@ -46,20 +46,25 @@ jobs:
             -Dsonar.projectKey=CAScompany_project-PaymentService
             -Dsonar.organization=cascompany
             -Dsonar.java.binaries=**/target/classes
-            -Dsonar.sources=src/
+            -Dsonar.sources=.
             -Dsonar.junit.reportsPath=target/surefire-reports/
             -Dsonar.junit.reportsPath=target/checckstyle-result.xml
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
-            -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml  
+            -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
+            -Dsonar.exclusions=**/Dockerfile
+
+      - name: Revisar archivos 
+        run: tree    
                 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          scanMetadataReportFile: ./.scannerwork/report-task.txt
         # Force to fail step after specific time. $GITHUB_WORKSPACE
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   FUNTIONAL_TESTING:
     needs:  Analysis
     runs-on: ubuntu-latest
