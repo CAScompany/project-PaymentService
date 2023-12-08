@@ -59,13 +59,13 @@ jobs:
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
         with:
-          scanMetadataReportFile: ./.scannerwork/report-task.txt
+          scanMetadataReportFile: .scannerwork/report-task.txt
         # Force to fail step after specific time. $GITHUB_WORKSPACE
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   FUNTIONAL_TESTING:
-    # needs:  Analysis
+    needs:  Analysis
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -171,7 +171,7 @@ jobs:
           registry: ${{ secrets.registry }}
           repo: ${{env.ECR_REPOSITORY}}
           region: ${{env.AWS_REGION}}
-          tags: payment-service,v${{github.run_number}}
+          tags: payment-service v${{github.run_number}}
           daemon_off: false
           dockerfile: ./Dockerfile
           context: ./          
