@@ -1,5 +1,5 @@
 FROM maven AS BUILD_IMAGE
-COPY ./payment-service payment-MS
+COPY ./payments-service payment-MS
 RUN cd payment-MS && mvn install -B
 
 FROM openjdk:8-jdk-alpine
