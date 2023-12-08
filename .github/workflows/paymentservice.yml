@@ -46,7 +46,7 @@ jobs:
             -Dsonar.projectKey=CAScompany_project-PaymentService
             -Dsonar.organization=cascompany
             -Dsonar.java.binaries=**/target/classes
-            -Dsonar.sources=.
+            -Dsonar.sources=src/
             -Dsonar.junit.reportsPath=target/surefire-reports/
             -Dsonar.junit.reportsPath=target/checckstyle-result.xml
             -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
