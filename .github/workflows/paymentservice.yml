@@ -156,6 +156,9 @@ jobs:
   BUILD_AND_PUBLISH:
 #    needs:  Release
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.CODE_DIR }}
     steps:
       - name: Code checkout 
         uses: actions/checkout@v4
