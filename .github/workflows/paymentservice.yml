@@ -15,57 +15,53 @@ permissions:
   pull-requests: read
 
 jobs:
-  # Analysis:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #       run:
-  #           working-directory: ${{ env.CODE_DIR }}
+  Analysis:
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+            working-directory: ${{ env.CODE_DIR }}
 
-  #   steps:
-  #     - name: Code checkout 
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Code checkout 
+        uses: actions/checkout@v4
 
-  #     - name: test maven
-  #       run: mvn clean test install
+      - name: test maven
+        run: mvn clean test install
       
-  #     - name: Set up JDK 11
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: 'temurin' 
-  #         java-version: '11'   
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' 
+          java-version: '11'   
       
                       
         
-  #     - name: Analyze with SonarCloud
-  #       uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049
-  #       env:
-  #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #       with:
-  #         args:
-  #           -Dsonar.projectKey=CAScompany_project-PaymentService
-  #           -Dsonar.organization=cascompany
-  #           -Dsonar.java.binaries=**/target/classes
-  #           -Dsonar.sources=.
-  #           -Dsonar.junit.reportsPath=target/surefire-reports/
-  #           -Dsonar.junit.reportsPath=target/checckstyle-result.xml
-  #           -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
-  #           -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml
-
-  #     - name: Revisar archivos 
-  #       run: tree    
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args:
+            -Dsonar.projectKey=CAScompany_project-PaymentService
+            -Dsonar.organization=cascompany
+            -Dsonar.java.binaries=**/target/classes
+            -Dsonar.sources=src/
+            -Dsonar.junit.reportsPath=target/surefire-reports/
+            -Dsonar.junit.reportsPath=target/checckstyle-result.xml
+            -Dsonar.jacoco.reportsPathtarjet/jacoco.exec
+            -Dsonar.java.checkstyle.reportPath=target/checkstyle-result.xml  
                 
-  #     - name: SonarQube Quality Gate check
-  #       id: sonarqube-quality-gate-check
-  #       uses: sonarsource/sonarqube-quality-gate-action@master
-  #       with:
-  #         scanMetadataReportFile: ./.scannerwork/report-task.txt
-  #       # Force to fail step after specific time. $GITHUB_WORKSPACE
-  #       timeout-minutes: 5
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time. $GITHUB_WORKSPACE
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   FUNTIONAL_TESTING:
-    # needs:  Analysis
+    needs:  Analysis
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -137,8 +133,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN_RELEASE }}
         with:
           tag_name: v${{github.run_number}}
-          release_name: product-service
-          body: product-service v${{github.run_number}}
+          release_name: payments-service
+          body: payments-service v${{github.run_number}}
           draft: false
           prerelease: false 
         
@@ -153,25 +149,25 @@ jobs:
           asset_name: payments-service.jar
           asset_content_type: application/java-archive
 
-  # BUILD_AND_PUBLISH:
-  #   needs:  Release
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ${{ env.CODE_DIR }}
-  #   steps:
-  #     - name: Code checkout 
-  #       uses: actions/checkout@v4
+  BUILD_AND_PUBLISH:
+    needs:  Release
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.CODE_DIR }}
+    steps:
+      - name: Code checkout 
+        uses: actions/checkout@v4
 
-  #     - name: upload image to ECR
-  #       uses: appleboy/docker-ecr-action@master        
-  #       with:
-  #         access_key: ${{ secrets.AWS_ACCESS_KEY_ID_PERSONAL_ECR}}
-  #         secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PERSONAL_ECR}}
-  #         registry: ${{ secrets.registry }}
-  #         repo: ${{env.ECR_REPOSITORY}}
-  #         region: ${{env.AWS_REGION}}
-  #         tags: latest,${{github.run_number}}
-  #         daemon_off: false
-  #         dockerfile: ./Dockerfile
-  #         context: ./            
+      - name: upload image to ECR
+        uses: appleboy/docker-ecr-action@master        
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID_PERSONAL_ECR}}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PERSONAL_ECR}}
+          registry: ${{ secrets.registry }}
+          repo: ${{env.ECR_REPOSITORY}}
+          region: ${{env.AWS_REGION}}
+          tags: payment-service,v${{github.run_number}}
+          daemon_off: false
+          dockerfile: ./Dockerfile
+          context: ./          
