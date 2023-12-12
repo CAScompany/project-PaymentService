@@ -153,9 +153,8 @@ jobs:
   #         asset_path: ${{ env.CODE_DIR }}/target/payments-service-example-0.0.1-SNAPSHOT.jar
   #         asset_name: payments-service.jar
   #         asset_content_type: application/java-archive
-
   BUILD_AND_PUBLISH:
-  #  needs:  Release
+    # needs: Release
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -163,28 +162,36 @@ jobs:
     steps:
       - name: Code checkout 
         uses: actions/checkout@v4
-
-
+  
       - name: Code checkout 
         uses: actions/checkout@v4
   
       - name: Setup AWS creds
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PERSONAL_ECR }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PERSONAL_ECR }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
-
+  
+      - name: upload image to ECR
+        uses: appleboy/docker-ecr-action@master
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          repo: ${{ secrets.ECR_REPOSITORY }}
+          tags: payment-service-v${{ github.run_number }}
+          daemon_off: false
+          dockerfile: ./Dockerfile
+          context: ./
+  
 
 
       - name: upload image to ECR
         uses: appleboy/docker-ecr-action@master        
         with:
-          registry: ${{ secrets.registry }}
-          repo: ${{secrets.ECR_REPOSITORY}}
-          tags: payment-service-v${{github.run_number}}
-          daemon_off: false
-          dockerfile: ./Dockerfile
-          context: ./
-  
+         registry: ${{ secrets.REGISTRY }}
+         repo: ${{secrets.ECR_REPOSITORY}}
+         tags: payment-service-v${{github.run_number}}
+         daemon_off: false
+         dockerfile: ./Dockerfile
+         context: ./
