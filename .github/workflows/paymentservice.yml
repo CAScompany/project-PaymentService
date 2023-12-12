@@ -155,36 +155,33 @@ jobs:
   #         asset_content_type: application/java-archive
 
   BUILD_AND_PUBLISH:
-  #  needs:  Release
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.CODE_DIR }}
-    steps:
-      - name: Code checkout 
-        uses: actions/checkout@v4
-
-
-      - name: Code checkout 
-        uses: actions/checkout@v4
-  
-      - name: Setup AWS creds
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PERSONAL_ECR }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PERSONAL_ECR }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+     #needs:  Release
+     runs-on: ubuntu-latest
+     defaults:
+       run:
+         working-directory: ${{ env.CODE_DIR }}
+     steps:
+       - name: Code checkout 
+         uses: actions/checkout@v4
+   
+       - name: Configurar credenciales de AWS
+         uses: aws-actions/configure-aws-credentials@v1
+         with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PERSONAL_ECR }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PERSONAL_ECR }}
+           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+           aws-region: ${{ env.AWS_REGION }}
 
 
 
-      - name: upload image to ECR
-        uses: appleboy/docker-ecr-action@master        
-        with:
-          registry: ${{ secrets.registry }}
-          repo: ${{secrets.ECR_REPOSITORY}}
-          tags: payment-service-v${{github.run_number}}
-          daemon_off: false
-          dockerfile: ./Dockerfile
-          context: ./
+       - name: upload image to ECR
+         uses: appleboy/docker-ecr-action@master        
+         with:
+           registry: ${{ secrets.registry }}
+           repo: ${{secrets.ECR_REPOSITORY}}
+           tags: payment-service-v${{github.run_number}}
+           daemon_off: false
+           dockerfile: ./Dockerfile
+           context: ./
+   
   
