@@ -154,15 +154,12 @@ jobs:
   #         asset_name: payments-service.jar
   #         asset_content_type: application/java-archive
   BUILD_AND_PUBLISH:
-    # needs: Release
+    #  needs:  Release
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ env.CODE_DIR }}
     steps:
-      - name: Code checkout 
-        uses: actions/checkout@v4
-  
       - name: Code checkout 
         uses: actions/checkout@v4
   
@@ -174,24 +171,13 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
   
-      - name: upload image to ECR
-        uses: appleboy/docker-ecr-action@master
+      - name: Upload image to ECR
+        uses: appleboy/docker-ecr-action@master        
         with:
           registry: ${{ secrets.REGISTRY }}
           repo: ${{ secrets.ECR_REPOSITORY }}
-          tags: payment-service-v${{ github.run_number }}
+          tags: shipping-service-v${{ github.run_number }}
           daemon_off: false
           dockerfile: ./Dockerfile
           context: ./
   
-
-
-      - name: upload image to ECR
-        uses: appleboy/docker-ecr-action@master        
-        with:
-         registry: ${{ secrets.REGISTRY }}
-         repo: ${{secrets.ECR_REPOSITORY}}
-         tags: payment-service-v${{github.run_number}}
-         daemon_off: false
-         dockerfile: ./Dockerfile
-         context: ./
