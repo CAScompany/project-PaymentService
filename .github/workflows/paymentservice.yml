@@ -27,7 +27,7 @@ on:
         required: true   
 
 env:
-  CODE_DIR: ./products-service
+  CODE_DIR: ./payments-service
   
 jobs:
   Analysis:
