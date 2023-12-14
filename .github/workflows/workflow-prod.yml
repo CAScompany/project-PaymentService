@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build-prod:
-    uses: CAScompany/project-PaymentService/.github/workflows/paymentservice.yml@main
+    uses: CAScompany/ project-PaymentService/.github/workflows/paymentservice.yml@main
     with:
       CI_ENV: producion
       CONTENTFUL_ENVIRONMENT: 'main'
