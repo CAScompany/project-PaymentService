@@ -274,7 +274,7 @@ jobs:
             aws-region: ${{ secrets.AWS_REGION }}
             cluster-name: ${{ secrets.EKS_CLUSTER }}
   #          config-files: .github/values/dev.yaml
-            chart-path: ./shippingchart
-            namespace: producion
+            chart-path: ./paymentchart
+            namespace: production
             values: appimage=${{secrets.REGISTRY}}/${{secrets.ECR_REPOSITORY}},apptag=payment-service-${{ inputs.CI_ENV }}.v${{ github.run_number }}
-            name: shipping-service
+            name: payment-service
